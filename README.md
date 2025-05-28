@@ -40,4 +40,4 @@ Esta aplicación está diseñada para mostrar información meteorológica en tie
 1. Clona este repositorio:
 
    ```bash
-   git clone https://github.com/tu_usuario/nombre-del-repositorio.git
+   git clone https://github.com/GerardoDomingo/ProyectClima.git
