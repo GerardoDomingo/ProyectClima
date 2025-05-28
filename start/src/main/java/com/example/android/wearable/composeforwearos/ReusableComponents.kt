@@ -1,215 +1,113 @@
-/*
- * Copyright 2021 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.example.android.wearable.composeforwearos
 
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
-import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
-import androidx.wear.compose.material3.AppScaffold
-import androidx.wear.compose.material3.Button
-import androidx.wear.compose.material3.ScreenScaffold
-import androidx.wear.compose.material3.Text
-import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
-import com.example.android.wearable.composeforwearos.theme.WearAppTheme
-import com.google.android.horologist.compose.layout.ColumnItemType
-import com.google.android.horologist.compose.layout.rememberResponsiveColumnPadding
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.wear.compose.material.*
+import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.items
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.vector.ImageVector
 
-/* Contains individual Wear OS demo composables for the code lab. */
+data class DayWeather(
+    val day: String,
+    val temperature: String,
+    val humidity: String,
+    val icon: ImageVector
+)
 
-// TODO: Create a Icon Button Composable
+val sampleData = listOf(
+    DayWeather("Mon", "25°C", "60%", Icons.Filled.WbSunny),
+    DayWeather("Tue", "22°C", "70%", Icons.Filled.Cloud),
+    DayWeather("Wed", "24°C", "65%", Icons.Filled.WbSunny),
+    DayWeather("Thu", "20°C", "80%", Icons.Filled.Cloud),
+    DayWeather("Fri", "26°C", "55%", Icons.Filled.WbSunny),
+    DayWeather("Sat", "23°C", "60%", Icons.Filled.Cloud),
+    DayWeather("Sun", "27°C", "50%", Icons.Filled.WbSunny),
+)
+
 @Composable
-fun IconButtonExample(
-    modifier: Modifier = Modifier,
-) {
-}
+fun WeatherListScreen(onDetailsClick: () -> Unit) {
+    val listState = rememberScalingLazyListState()
 
-// TODO: Create a Text Composable
-@Composable
-fun TextExample(modifier: Modifier = Modifier) {
-}
-
-// TODO: Create a Card (specifically, an AppCard) Composable
-@Composable
-fun CardExample(
-    modifier: Modifier = Modifier,
-    iconModifier: Modifier = Modifier,
-) {
-}
-
-// TODO: Create a Chip Composable
-@Composable
-fun ChipExample(
-    modifier: Modifier = Modifier,
-) {
-}
-
-// TODO: Create a Chip with a switch Composable
-@Composable
-fun SwitchChipExample(modifier: Modifier = Modifier) {
-}
-
-// Function only used as a demo for when you start the code lab (removed as step 1).
-@Composable
-fun StartOnlyTextComposables() {
-    Text(
-        modifier = Modifier.fillMaxSize(),
-        textAlign = TextAlign.Center,
-        text = stringResource(R.string.hello_world_starter),
-    )
-}
-
-// Hello, world starter text preview
-@WearPreviewDevices
-@Composable
-fun StartOnlyTextComposablesPreview() {
-    WearAppTheme {
-        AppScaffold {
-            val listState = rememberTransformingLazyColumnState()
-            val contentPadding =
-                rememberResponsiveColumnPadding(first = ColumnItemType.BodyText)
-            ScreenScaffold(
-                scrollState = listState,
-                contentPadding = contentPadding,
-            ) { contentPadding ->
-                TransformingLazyColumn(state = listState, contentPadding = contentPadding) {
-                    item {
-                        StartOnlyTextComposables()
-                    }
+    Scaffold(
+        timeText = { TimeText() },
+        vignette = { Vignette(vignettePosition = VignettePosition.TopAndBottom) },
+        positionIndicator = { PositionIndicator(scalingLazyListState = listState) }
+    ) {
+        ScalingLazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.Start,
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 16.dp)
+        ) {
+            items(sampleData) { day ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(day.day, fontSize = 12.sp)
+                    Icon(imageVector = day.icon, contentDescription = null, modifier = Modifier.size(20.dp))
+                    Text(day.temperature, fontSize = 12.sp)
+                    Text(day.humidity, fontSize = 12.sp)
+                }
+            }
+            item {
+                Button(onClick = onDetailsClick, modifier = Modifier.fillMaxWidth()) {
+                    Text("Detalles", fontSize = 12.sp)
                 }
             }
         }
     }
 }
 
-// Button Preview
-@WearPreviewDevices
 @Composable
-fun ButtonExamplePreview() {
-    WearAppTheme {
-        AppScaffold {
-            val listState = rememberTransformingLazyColumnState()
-            val contentPadding =
-                rememberResponsiveColumnPadding(first = ColumnItemType.IconButton)
-            ScreenScaffold(
-                scrollState = listState,
-                contentPadding = contentPadding,
-            ) { contentPadding ->
-                TransformingLazyColumn(state = listState, contentPadding = contentPadding) {
-                    item {
-                        IconButtonExample()
-                    }
-                }
-            }
+fun WeatherDetailScreen() {
+    Scaffold(
+        timeText = { TimeText() }
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Detalles del clima semanal", fontSize = 14.sp)
         }
     }
 }
-
-// Text Preview
-@WearPreviewDevices
 @Composable
-fun TextExamplePreview() {
-    WearAppTheme {
-        AppScaffold {
-            val listState = rememberTransformingLazyColumnState()
-            val contentPadding =
-                rememberResponsiveColumnPadding(first = ColumnItemType.BodyText)
-            ScreenScaffold(
-                scrollState = listState,
-                contentPadding = contentPadding,
-            ) { contentPadding ->
-                TransformingLazyColumn(state = listState, contentPadding = contentPadding) {
-                    item {
-                        TextExample()
-                    }
-                }
-            }
-        }
-    }
-}
+fun WeatherTodayScreen(onViewWeekClick: () -> Unit) {
+    val todayWeather = DayWeather("Hoy", "25°C", "60%", Icons.Filled.WbSunny)
 
-// Card Preview
-@WearPreviewDevices
-@Composable
-fun CardExamplePreview() {
-    WearAppTheme {
-        AppScaffold {
-            val listState = rememberTransformingLazyColumnState()
-            val contentPadding =
-                rememberResponsiveColumnPadding(first = ColumnItemType.Card)
-            ScreenScaffold(
-                scrollState = listState,
-                contentPadding = contentPadding,
-            ) { contentPadding ->
-                TransformingLazyColumn(state = listState, contentPadding = contentPadding) {
-                    item {
-                        CardExample()
-                    }
-                }
-            }
-        }
-    }
-}
-
-// Chip Preview
-@WearPreviewDevices
-@Composable
-fun ChipPreview() {
-    WearAppTheme {
-        AppScaffold {
-            val listState = rememberTransformingLazyColumnState()
-            val contentPadding =
-                rememberResponsiveColumnPadding(first = ColumnItemType.Button)
-            ScreenScaffold(
-                scrollState = listState,
-                contentPadding = contentPadding,
-            ) { contentPadding ->
-                TransformingLazyColumn(state = listState, contentPadding = contentPadding) {
-                    item {
-                        ChipExample()
-                    }
-                }
-            }
-        }
-    }
-}
-
-// Switch Chip Preview
-@WearPreviewDevices
-@Composable
-fun SwitchChipExamplePreview() {
-    WearAppTheme {
-        AppScaffold {
-            val listState = rememberTransformingLazyColumnState()
-            val contentPadding =
-                rememberResponsiveColumnPadding(first = ColumnItemType.Button)
-            ScreenScaffold(
-                scrollState = listState,
-                contentPadding = contentPadding,
-            ) { contentPadding ->
-                TransformingLazyColumn(state = listState, contentPadding = contentPadding) {
-                    item {
-                        SwitchChipExample()
-                    }
-                }
+    Scaffold(
+        timeText = { TimeText() }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = todayWeather.icon,
+                contentDescription = null,
+                modifier = Modifier.size(40.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Clima de hoy", fontSize = 14.sp)
+            Text("Temperatura: ${todayWeather.temperature}", fontSize = 12.sp)
+            Text("Humedad: ${todayWeather.humidity}", fontSize = 12.sp)
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = onViewWeekClick) {
+                Text("Ver semana", fontSize = 12.sp)
             }
         }
     }
