@@ -59,8 +59,6 @@ fun WeatherApp() {
                 }
             )
         }
-        composable("weather_detail") {
-            WeatherDetailScreen()
-        }
+
     }
 }
