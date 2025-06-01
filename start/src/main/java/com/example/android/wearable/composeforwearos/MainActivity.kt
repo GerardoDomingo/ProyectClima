@@ -34,7 +34,6 @@ class MainActivity : ComponentActivity() {
             )
         }
     }
-
 }
 
 @Composable
@@ -49,18 +48,27 @@ fun WeatherApp() {
             WeatherTodayScreen(
                 onViewWeekClick = {
                     navController.navigate("weather_list")
-                }
-            )
-        }
-        composable("weather_list") {
-            WeatherListScreen(
-                onDetailsClick = {
+                },
+                onViewDetailsClick = {
                     navController.navigate("weather_detail")
                 }
             )
         }
+
+        composable("weather_list") {
+            WeatherListScreen(
+                onBackClick = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
         composable("weather_detail") {
-            WeatherDetailScreen()
+            WeatherDetailScreen(
+                onBackClick = {
+                    navController.navigateUp()
+                }
+            )
         }
     }
 }
